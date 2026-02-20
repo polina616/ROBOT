@@ -174,7 +174,7 @@ public class MainApplicationFrame extends JFrame
     private void exitApplication() {
         int choice = JOptionPane.showConfirmDialog(
                 this,
-                "вы действительно зотите выйти?",
+                "вы действительно хотите выйти?",
                 "подтверждение выхода",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
