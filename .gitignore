@@ -1,0 +1,23 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# macOS
+.DS_Store
+
+# скомпилированная Java
+*.class
+out/
+target/
+bin/
+
+# логи
+log/
+logs/
+*.log
+
+# всякие временные папки
+/.settings/
+/.classpath
+/.project
