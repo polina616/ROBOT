@@ -12,11 +12,6 @@ out/
 target/
 bin/
 
-# логи
-log/
-logs/
-*.log
-
 # всякие временные папки
 /.settings/
 /.classpath
