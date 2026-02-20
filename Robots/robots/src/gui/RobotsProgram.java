@@ -1,17 +1,23 @@
 package gui;
 
 import java.awt.Frame;
-
+import java.util.Locale;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
+import org.omegat.swing.extra.ExtraLocales;
 public class RobotsProgram
 {
     public static void main(String[] args) {
-        UIManager.put("OptionPane.yesButtonText", "ДА");
-        UIManager.put("OptionPane.noButtonText", "НЕТ");
-        UIManager.put("OptionPane.okButtonText", "ОКЕЙ");
-        UIManager.put("OptionPane.cancelButtonText", "ОТМЕНА");
+        Locale.setDefault(Locale.of("ru", "RU"));
+        try {
+            ExtraLocales.initialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //UIManager.put("OptionPane.yesButtonText", "ДА");
+        //UIManager.put("OptionPane.noButtonText", "НЕТ");
+        //UIManager.put("OptionPane.okButtonText", "ОКЕЙ");
+        //UIManager.put("OptionPane.cancelButtonText", "ОТМЕНА");
       try {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
