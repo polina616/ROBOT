@@ -6,7 +6,7 @@ import javax.swing.UIManager;
 
 public class RobotsProgram
 {
-    //cd C:\Users\Varvara\Desktop\oop\ROBOT\Robots\robots
+    //cd C:\Users\sofam\IdeaProjects\ROBOT\Robots\robots
     //mvn compile exec:java
     public static void main(String[] args) {
 

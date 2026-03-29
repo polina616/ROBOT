@@ -15,33 +15,8 @@
     </properties>
 
 
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>netbeans</id>-->
-<!--            <name>NetBeans Maven Repository</name>-->
-<!--            <url>https://bits.netbeans.org/maven2/</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
-
-<!--    <dependencies>-->
-
-<!--&lt;!&ndash;        <dependency>&ndash;&gt;-->
-<!--&lt;!&ndash;            <groupId>org.netbeans.api</groupId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <artifactId>org-openide-awt</artifactId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <version>RELEASE140</version>&ndash;&gt;-->
-<!--&lt;!&ndash;        </dependency>&ndash;&gt;-->
-
-
-<!--&lt;!&ndash;        <dependency>&ndash;&gt;-->
-<!--&lt;!&ndash;            <groupId>org.omegat</groupId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <artifactId>swing-extra-locales</artifactId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <version>0.3.3</version>&ndash;&gt;-->
-<!--&lt;!&ndash;        </dependency>&ndash;&gt;-->
-
-
-<!--    </dependencies>-->
-
     <build>
+        <sourceDirectory>${basedir}</sourceDirectory>
         <plugins>
 
             <plugin>
