@@ -6,8 +6,6 @@ import javax.swing.UIManager;
 
 public class RobotsProgram
 {
-    //cd C:\Users\sofam\IdeaProjects\ROBOT\Robots\robots
-    //mvn compile exec:java
     public static void main(String[] args) {
 
         RussianLocalizer.setup();
@@ -25,4 +23,4 @@ public class RobotsProgram
             frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         });
     }
-    }
+}
