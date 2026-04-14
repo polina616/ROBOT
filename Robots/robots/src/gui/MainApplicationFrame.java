@@ -44,21 +44,19 @@ public class MainApplicationFrame extends JFrame
 
         logWindow = createLogWindow();
         addWindow(logWindow);
-        restoreWindowState("LogWindow", logWindow);
+        restoreWindowState("LogWindow", logWindow, new Rectangle(10,10,300,800));
 
         // === Инициализация модели робота и новых окон ===
         robotModel = new RobotModel();
 
         gameWindow = new GameWindow(robotModel);
-        gameWindow.setSize(400, 400);
         addWindow(gameWindow);
-        restoreWindowState("GameWindow", gameWindow);
+        restoreWindowState("GameWindow", gameWindow, new Rectangle(320,10,400,400));
 
         // Новое окно с координатами робота
         robotInfoWindow = new RobotInfoWindow(robotModel);
-        robotInfoWindow.setLocation(420, 10);
         addWindow(robotInfoWindow);
-        restoreWindowState("RobotInfoWindow", robotInfoWindow);
+        restoreWindowState("RobotInfoWindow", robotInfoWindow, new Rectangle(730,10,320,190));
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -73,10 +71,8 @@ public class MainApplicationFrame extends JFrame
     protected LogWindow createLogWindow()
     {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10,10);
-        logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
         logWindow.pack();
+        setMinimumSize(logWindow.getSize());
         Logger.debug("Протокол работает");
         return logWindow;
     }
@@ -87,10 +83,12 @@ public class MainApplicationFrame extends JFrame
         frame.setVisible(true);
     }
 
-    private void restoreWindowState(String windowId, JInternalFrame frame) {
+    private void restoreWindowState(String windowId, JInternalFrame frame, Rectangle defaultBounds) {
         Rectangle bounds = config.getWindowBounds(windowId);
         if (bounds != null) {
             frame.setBounds(bounds);
+        } else {
+            frame.setBounds(defaultBounds); // дефолт, если нет сохранённого состояния
         }
 
         boolean isIconified = config.isWindowIconified(windowId);

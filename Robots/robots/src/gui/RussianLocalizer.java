@@ -1,7 +1,6 @@
 package gui;
 import javax.swing.UIManager;
 import java.util.Locale;
-import java.util.Locale;
 public class RussianLocalizer {
     private RussianLocalizer() {
 

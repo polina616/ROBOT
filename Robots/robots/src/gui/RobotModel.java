@@ -67,11 +67,15 @@ public class RobotModel
         double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
 
-        if (angleToTarget > m_robotDirection)
-            angularVelocity = MAX_ANGULAR_VELOCITY;
-        else if (angleToTarget < m_robotDirection)
-            angularVelocity = -MAX_ANGULAR_VELOCITY;
+        double angleDiff = angleToTarget - m_robotDirection;
+// нормализуем разность в пи
+        while (angleDiff > Math.PI)  angleDiff -= 2 * Math.PI;
+        while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
 
+        if (angleDiff > 0)
+            angularVelocity = MAX_ANGULAR_VELOCITY;
+        else if (angleDiff < 0)
+            angularVelocity = -MAX_ANGULAR_VELOCITY;
         moveRobot(velocity, angularVelocity, 10);
         notifyListeners();
     }
