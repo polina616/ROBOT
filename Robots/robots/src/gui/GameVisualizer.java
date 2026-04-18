@@ -14,43 +14,40 @@ import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel implements RobotModel.RobotListener
 {
-    private final RobotModel model;
-    private final Timer m_timer = initTimer();
+    private final RobotModel model; // игрок
+    private final BotModel   bot;  // бот
 
-    private static Timer initTimer()
-    {
-        Timer timer = new Timer("events generator", true);
-        return timer;
-    }
+    private final Timer m_timer = new Timer("events generator", true);
 
     public GameVisualizer(RobotModel model)
     {
         this.model = model;
         model.addListener(this);
 
-        m_timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                onRedrawEvent();
-            }
+        bot = new BotModel(500, 400);
+        bot.addListener(this);
+
+        // Перерисовка
+        m_timer.schedule(new TimerTask() {
+            @Override public void run() { onRedrawEvent(); }
         }, 0, 50);
 
-        m_timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                model.updateModel();
+        // Обновление игрока
+        m_timer.schedule(new TimerTask() {
+            @Override public void run() { model.updateModel(); }
+        }, 0, 10);
+
+        // Обновление бота
+        m_timer.schedule(new TimerTask() {
+            @Override public void run() {
+                bot.setFieldSize(getWidth(), getHeight());
+                bot.updateBot();
             }
         }, 0, 10);
 
-        addMouseListener(new MouseAdapter()
-        {
+        addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e)
-            {
+            public void mouseClicked(MouseEvent e) {
                 model.setTargetPosition(e.getPoint().x, e.getPoint().y);
                 repaint();
             }
@@ -60,35 +57,41 @@ public class GameVisualizer extends JPanel implements RobotModel.RobotListener
     }
 
     @Override
-    public void onRobotStateChanged(RobotModel model)
-    {
+    public void onRobotStateChanged(RobotModel m) {
         EventQueue.invokeLater(this::repaint);
     }
 
-    protected void onRedrawEvent()
-    {
+    protected void onRedrawEvent() {
         EventQueue.invokeLater(this::repaint);
     }
 
     @Override
-    public void paint(Graphics g)
-    {
+    public void paint(Graphics g) {
         super.paint(g);
-        Graphics2D g2d = (Graphics2D)g;
+        Graphics2D g2d = (Graphics2D) g;
 
-        int x = (int)Math.round(model.getRobotPositionX());
-        int y = (int)Math.round(model.getRobotPositionY());
-        double direction = model.getRobotDirection();
-
-        drawRobot(g2d, x, y, direction);
         drawTarget(g2d, model.getTargetPositionX(), model.getTargetPositionY());
+
+        // Бот — красный
+        drawRobot(g2d,
+                (int) Math.round(bot.getRobotPositionX()),
+                (int) Math.round(bot.getRobotPositionY()),
+                bot.getRobotDirection(),
+                Color.RED);
+
+        // Игрок — пурпурный
+        drawRobot(g2d,
+                (int) Math.round(model.getRobotPositionX()),
+                (int) Math.round(model.getRobotPositionY()),
+                model.getRobotDirection(),
+                Color.MAGENTA);
     }
 
-    private void drawRobot(Graphics2D g, int x, int y, double direction)
-    {
-        AffineTransform t = AffineTransform.getRotateInstance(direction, x, y);
-        g.setTransform(t);
-        g.setColor(Color.MAGENTA);
+    private void drawRobot(Graphics2D g, int x, int y, double direction, Color bodyColor) {
+        AffineTransform saved = g.getTransform();
+        g.transform(AffineTransform.getRotateInstance(direction, x, y));
+
+        g.setColor(bodyColor);
         fillOval(g, x, y, 30, 10);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 30, 10);
@@ -96,30 +99,22 @@ public class GameVisualizer extends JPanel implements RobotModel.RobotListener
         fillOval(g, x + 10, y, 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, x + 10, y, 5, 5);
+
+        g.setTransform(saved);
     }
 
-    private void drawTarget(Graphics2D g, int x, int y)
-    {
-        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
-        g.setTransform(t);
+    private void drawTarget(Graphics2D g, int x, int y) {
         g.setColor(Color.GREEN);
         fillOval(g, x, y, 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 5, 5);
     }
 
-    private static int round(double value)
-    {
-        return (int)(value + 0.5);
+    private static void fillOval(Graphics g, int cx, int cy, int d1, int d2) {
+        g.fillOval(cx - d1 / 2, cy - d2 / 2, d1, d2);
     }
 
-    private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
-    {
-        g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-    }
-
-    private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
-    {
-        g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
+    private static void drawOval(Graphics g, int cx, int cy, int d1, int d2) {
+        g.drawOval(cx - d1 / 2, cy - d2 / 2, d1, d2);
     }
 }
