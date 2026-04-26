@@ -12,13 +12,12 @@ public class RobotModel
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
 
+    // Скорости — protected чтобы бот мог переопределить через getMaxVelocity()
     private static final double MAX_VELOCITY         = 0.1;
-    private static final double MAX_ANGULAR_VELOCITY = 0.001;
-    private static final double ANGLE_THRESHOLD      = 0.005;
+    private static final double MAX_ANGULAR_VELOCITY = 0.01;
 
-    // Радиус остановки увеличен: робот тормозит раньше чем проскочит
-    private static final double STOP_RADIUS    = 10.0;
-    // На этом расстоянии начинаем плавно снижать скорость
+    private static final double ANGLE_THRESHOLD = 0.005;
+    private static final double STOP_RADIUS     = 10.0;
     private static final double SLOWDOWN_RADIUS = 40.0;
 
     private final List<RobotListener> listeners = new ArrayList<>();
@@ -40,6 +39,9 @@ public class RobotModel
         synchronized (listeners) { array = listeners.toArray(new RobotListener[0]); }
         for (RobotListener l : array) l.onRobotStateChanged(this);
     }
+
+    /** Переопредели в подклассе чтобы изменить скорость */
+    protected double getMaxVelocity() { return MAX_VELOCITY; }
 
     public double getRobotPositionX() { return m_robotPositionX; }
     public double getRobotPositionY() { return m_robotPositionY; }
@@ -65,8 +67,6 @@ public class RobotModel
     public void updateModel() {
         double distance = distance(m_targetPositionX, m_targetPositionY,
                 m_robotPositionX,  m_robotPositionY);
-
-        // Стоим если уже близко
         if (distance < STOP_RADIUS) return;
 
         double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY,
@@ -77,14 +77,11 @@ public class RobotModel
         while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
 
         double angularVelocity = 0;
-        if (Math.abs(angleDiff) > ANGLE_THRESHOLD) {
+        if (Math.abs(angleDiff) > ANGLE_THRESHOLD)
             angularVelocity = angleDiff > 0 ? MAX_ANGULAR_VELOCITY : -MAX_ANGULAR_VELOCITY;
-        }
 
-        // Скорость: сначала замедляемся по углу, потом ещё по расстоянию
-        double alignFactor    = Math.max(0, Math.cos(angleDiff));
         double distanceFactor = Math.min(1.0, distance / SLOWDOWN_RADIUS);
-        double velocity       = MAX_VELOCITY * alignFactor * distanceFactor;
+        double velocity = getMaxVelocity() * Math.max(0, Math.cos(angleDiff)) * distanceFactor;
 
         moveRobot(velocity, angularVelocity, 10);
         notifyListeners();
@@ -100,7 +97,7 @@ public class RobotModel
     }
 
     private void moveRobot(double velocity, double angularVelocity, double duration) {
-        velocity        = applyLimits(velocity,        0, MAX_VELOCITY);
+        velocity        = applyLimits(velocity,        0, getMaxVelocity());
         angularVelocity = applyLimits(angularVelocity, -MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
 
         double newX, newY;
